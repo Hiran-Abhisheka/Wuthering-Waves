@@ -97,8 +97,7 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
 
     urls.forEach((url, i) => {
       const img = new Image();
-      img.crossOrigin = "anonymous";
-      // Use relative URL with cache buster
+      // Remove crossOrigin for local assets to avoid unnecessary CORS checks
       const finalUrl = `${url}?v=${Date.now()}`;
       img.src = finalUrl;
       img.onload = () => {
