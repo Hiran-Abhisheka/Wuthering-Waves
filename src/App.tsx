@@ -78,7 +78,7 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
   const [activeFrame, setActiveFrame] = useState(0);
 
   const imageUrls = useMemo(() => {
-    const baseUrl = `${import.meta.env.BASE_URL}src/ww/`.replace('//', '/');
+    const baseUrl = "/ww/";
     const isDevelopment = imagePrefix === "demo_";
     
     return Array.from({ length: frameCount }, (_, i) => {
@@ -156,6 +156,18 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
       // image native width corresponds to target screen height (scaledH)
       // image native height corresponds to target screen width (scaledW)
       ctx.drawImage(img, -scaledH / 2, -scaledW / 2, scaledH, scaledW);
+      
+      // Additional tactical scanlines overlay
+      ctx.restore();
+      ctx.save();
+      ctx.strokeStyle = "rgba(34, 211, 238, 0.05)";
+      ctx.lineWidth = 1;
+      for (let i = 0; i < canvas.height; i += 4) {
+        ctx.beginPath();
+        ctx.moveTo(0, i);
+        ctx.lineTo(canvas.width, i);
+        ctx.stroke();
+      }
       ctx.restore();
     }
   };
