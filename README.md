@@ -1,5 +1,5 @@
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://i.postimg.cc/cCzvCxMD/Screenshot-2026-05-01-223927.png" />
+<img src="https://i.postimg.cc/cCzvCxMD/Screenshot-2026-05-01-223927.png" />
 </div>
 
 # Wuthering Waves
