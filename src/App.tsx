@@ -71,43 +71,45 @@ function CustomCursor() {
  * SequenceScroll handles the frame-by-frame animation using a canvas.
  * It maps scroll progress to an array of images.
  */
-function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }: { frameCount?: number; imagePrefix?: string; containerRef: React.RefObject<HTMLDivElement> }) {
+function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: React.RefObject<HTMLDivElement> }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const images = useRef<HTMLImageElement[]>([]);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [activeFrame, setActiveFrame] = useState(0);
 
-  const imageUrls = useMemo(() => {
-    const isDevelopment = imagePrefix === "demo_";
-    
-    if (isDevelopment) {
-      return Array.from({ length: frameCount }, (_, i) => 
-        `https://picsum.photos/id/${(i % 10) + 20}/1920/1080`
-      );
-    }
-
-    // Load from src/ww using Vite's glob import
-    // This ensures assets are correctly hashed and bundled during production build
-    const imageModules = import.meta.glob("./ww/*.jpg", { eager: true, as: "url" });
-    const sortedPaths = Object.keys(imageModules).sort();
-    return sortedPaths.map((path) => (imageModules[path] as string));
-  }, [frameCount, imagePrefix]);
+  const actualFrameCount = urls.length;
 
   useEffect(() => {
+    if (actualFrameCount === 0) {
+      console.warn("[SequenceScroll] No images found in the sequence.");
+      return;
+    }
+    
+    console.log(`[SequenceScroll] Preloading ${actualFrameCount} frames...`);
     let loadedCount = 0;
-    imageUrls.forEach((url, i) => {
+    setImagesLoaded(false);
+
+    urls.forEach((url, i) => {
       const img = new Image();
       img.src = url;
       img.onload = () => {
         images.current[i] = img;
         loadedCount++;
-        if (loadedCount === frameCount) {
+        if (loadedCount === actualFrameCount) {
+          console.log("[SequenceScroll] All frames preloaded successfully.");
           setImagesLoaded(true);
           render(0);
         }
       };
+      img.onerror = () => {
+        console.error(`[SequenceScroll] Failed to load frame ${i}: ${url}`);
+        loadedCount++; 
+        if (loadedCount === actualFrameCount) {
+          setImagesLoaded(true);
+        }
+      };
     });
-  }, [imageUrls, frameCount]);
+  }, [urls, actualFrameCount]);
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -120,23 +122,21 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
     restDelta: 0.001
   });
 
-  const frameIndex = useTransform(smoothProgress, [0, 1], [0, frameCount - 1]);
+  const frameIndex = useTransform(smoothProgress, [0, 1], [0, actualFrameCount - 1]);
 
-  const render = (index: number) => {
+  const render = React.useCallback((index: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const roundedIndex = Math.round(index);
-    if (roundedIndex !== activeFrame) {
-      setActiveFrame(roundedIndex);
-    }
+    const roundedIndex = Math.min(Math.max(Math.round(index), 0), actualFrameCount - 1);
+    
+    setActiveFrame(roundedIndex);
 
     const img = images.current[roundedIndex];
-    if (img) {
+    if (img && img.complete) {
       const canvasAspect = canvas.width / canvas.height;
-      // After 90 degree rotation, image width and height effectively swap
       const rotatedImgAspect = img.height / img.width;
       let scaledW, scaledH;
 
@@ -151,15 +151,10 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
       ctx.save();
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       ctx.translate(canvas.width / 2, canvas.height / 2);
-      ctx.rotate(3 * Math.PI / 2); // 270 degrees clockwise (another 180 from 90)
+      ctx.rotate(3 * Math.PI / 2); 
       
-      // Draw the image centered. 
-      // After 90 deg rotation: 
-      // image native width corresponds to target screen height (scaledH)
-      // image native height corresponds to target screen width (scaledW)
       ctx.drawImage(img, -scaledH / 2, -scaledW / 2, scaledH, scaledW);
       
-      // Additional tactical scanlines overlay
       ctx.restore();
       ctx.save();
       ctx.strokeStyle = "rgba(34, 211, 238, 0.05)";
@@ -172,14 +167,14 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
       }
       ctx.restore();
     }
-  };
+  }, [actualFrameCount]);
 
   useEffect(() => {
     const unsubscribe = frameIndex.on("change", (latest) => {
       render(latest);
     });
     return () => unsubscribe();
-  }, [frameIndex, activeFrame]);
+  }, [frameIndex, render]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -243,7 +238,7 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
         <div className="text-sm md:text-xl font-mono tracking-tighter tabular-nums">
           <span className="text-wu-accent">{String(activeFrame + 1).padStart(2, '0')}</span> 
           <span className="text-white/20 mx-1">//</span> 
-          <span className="text-white/20">{frameCount}</span>
+          <span className="text-white/20">{actualFrameCount}</span>
         </div>
       </div>
 
@@ -459,6 +454,22 @@ export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const [currentFrame, setCurrentFrame] = useState(0);
 
+  const urls = useMemo(() => {
+    // Load from src/ww using Vite's glob import
+    // Note: In Vite, glob paths must be literals and relative to the current file
+    const imageModules = import.meta.glob("./ww/*.jpg", { eager: true, as: "url" });
+    
+    const sortedPaths = Object.keys(imageModules).sort((a, b) => {
+      const numA = parseInt(a.match(/\d+/)?.[0] || "0", 10);
+      const numB = parseInt(b.match(/\d+/)?.[0] || "0", 10);
+      return numA - numB;
+    });
+
+    return sortedPaths.map((path) => (imageModules[path] as string));
+  }, []);
+
+  const totalFrames = urls.length || 300;
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"]
@@ -467,10 +478,10 @@ export default function App() {
   // Track the current frame in state for the fragments
   useEffect(() => {
     const unsubscribe = scrollYProgress.on("change", (latest) => {
-      setCurrentFrame(Math.round(latest * 299));
+      setCurrentFrame(Math.round(latest * (totalFrames - 1)));
     });
     return () => unsubscribe();
-  }, [scrollYProgress]);
+  }, [scrollYProgress, totalFrames]);
   
   return (
     <div className="relative min-h-[600vh] cursor-none" ref={containerRef}>
@@ -478,7 +489,7 @@ export default function App() {
       <Navbar />
       
       {/* Background with Sequence Scroll */}
-      <SequenceScroll frameCount={300} containerRef={containerRef} />
+      <SequenceScroll urls={urls} containerRef={containerRef} />
 
       {/* Hero Scroll Prompt */}
       <ScrollPrompt scrollYProgress={scrollYProgress} />
