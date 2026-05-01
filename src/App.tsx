@@ -78,17 +78,19 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
   const [activeFrame, setActiveFrame] = useState(0);
 
   const imageUrls = useMemo(() => {
-    const baseUrl = "/ww/";
     const isDevelopment = imagePrefix === "demo_";
     
-    return Array.from({ length: frameCount }, (_, i) => {
-      if (!isDevelopment) {
-        // Filename: ezgif-frame-001.jpg, ezgif-frame-002.jpg ...
-        const frameNumber = String(i + 1).padStart(3, '0');
-        return `${baseUrl}ezgif-frame-${frameNumber}.jpg`;
-      }
-      return `https://picsum.photos/id/${(i % 10) + 20}/1920/1080`;
-    });
+    if (isDevelopment) {
+      return Array.from({ length: frameCount }, (_, i) => 
+        `https://picsum.photos/id/${(i % 10) + 20}/1920/1080`
+      );
+    }
+
+    // Load from src/ww using Vite's glob import
+    // This ensures assets are correctly hashed and bundled during production build
+    const imageModules = import.meta.glob("./ww/*.jpg", { eager: true, as: "url" });
+    const sortedPaths = Object.keys(imageModules).sort();
+    return sortedPaths.map((path) => (imageModules[path] as string));
   }, [frameCount, imagePrefix]);
 
   useEffect(() => {
