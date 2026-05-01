@@ -97,8 +97,10 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
 
     urls.forEach((url, i) => {
       const img = new Image();
+      img.crossOrigin = "anonymous";
       // Use relative URL with cache buster
-      img.src = `${url}?v=${Date.now()}`;
+      const finalUrl = `${url}?v=${Date.now()}`;
+      img.src = finalUrl;
       img.onload = () => {
         images.current[i] = img;
         loadedCount++;
@@ -464,8 +466,8 @@ export default function App() {
   const urls = useMemo(() => {
     // Files are now in public/assets/ezgif-frame-XXX.jpg
     const frameCount = 300;
-    // Using relative path for better compatibility with different deployment environments
-    const base = "assets/ezgif-frame-";
+    // Using absolute path for better compatibility with different deployment environments
+    const base = "/assets/ezgif-frame-";
     const extension = ".jpg";
     
     return Array.from({ length: frameCount }, (_, i) => {
