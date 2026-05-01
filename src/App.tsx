@@ -461,17 +461,16 @@ export default function App() {
   const [currentFrame, setCurrentFrame] = useState(0);
 
   const urls = useMemo(() => {
-    // Load from src/ww using Vite's glob import
-    // Note: In Vite, glob paths must be literals and relative to the current file
-    const imageModules = import.meta.glob("./ww/*.jpg", { eager: true, as: "url" });
+    // Files are now in public/assets/ezgif-frame-XXX.jpg
+    const frameCount = 300;
+    const base = "/assets/ezgif-frame-";
+    const extension = ".jpg";
     
-    const sortedPaths = Object.keys(imageModules).sort((a, b) => {
-      const numA = parseInt(a.match(/\d+/)?.[0] || "0", 10);
-      const numB = parseInt(b.match(/\d+/)?.[0] || "0", 10);
-      return numA - numB;
+    return Array.from({ length: frameCount }, (_, i) => {
+      // Pad with zeros to 3 digits (001, 002, ...)
+      const frameNumber = (i + 1).toString().padStart(3, "0");
+      return `${base}${frameNumber}${extension}`;
     });
-
-    return sortedPaths.map((path) => (imageModules[path] as string));
   }, []);
 
   const totalFrames = urls.length || 300;
