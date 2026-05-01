@@ -78,7 +78,7 @@ function SequenceScroll({ frameCount = 300, imagePrefix = "real", containerRef }
   const [activeFrame, setActiveFrame] = useState(0);
 
   const imageUrls = useMemo(() => {
-    const baseUrl = `${import.meta.env.BASE_URL}src/ww/`.replace('//', '/');
+    const baseUrl = `${import.meta.env.BASE_URL}ww/`.replace('//', '/');
     const isDevelopment = imagePrefix === "demo_";
     
     return Array.from({ length: frameCount }, (_, i) => {
