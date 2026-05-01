@@ -97,7 +97,8 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
 
     urls.forEach((url, i) => {
       const img = new Image();
-      img.src = url;
+      // Use relative URL with cache buster
+      img.src = `${url}?v=${Date.now()}`;
       img.onload = () => {
         images.current[i] = img;
         loadedCount++;
@@ -108,7 +109,7 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
         }
       };
       img.onerror = () => {
-        console.error(`[SequenceScroll] Failed to load frame ${i}: ${url}`);
+        console.error(`[SequenceScroll] Failed to load frame ${i} from URL: ${img.src}`);
         failCount++; 
         if (loadedCount + failCount === actualFrameCount) {
           setImagesLoaded(true);
@@ -463,7 +464,8 @@ export default function App() {
   const urls = useMemo(() => {
     // Files are now in public/assets/ezgif-frame-XXX.jpg
     const frameCount = 300;
-    const base = "/assets/ezgif-frame-";
+    // Using relative path for better compatibility with different deployment environments
+    const base = "assets/ezgif-frame-";
     const extension = ".jpg";
     
     return Array.from({ length: frameCount }, (_, i) => {
