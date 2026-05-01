@@ -87,7 +87,13 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
     
     console.log(`[SequenceScroll] Preloading ${actualFrameCount} frames...`);
     let loadedCount = 0;
+    let failCount = 0;
     setImagesLoaded(false);
+
+    if (actualFrameCount === 0) {
+      setImagesLoaded(true);
+      return;
+    }
 
     urls.forEach((url, i) => {
       const img = new Image();
@@ -95,16 +101,16 @@ function SequenceScroll({ urls, containerRef }: { urls: string[]; containerRef: 
       img.onload = () => {
         images.current[i] = img;
         loadedCount++;
-        if (loadedCount === actualFrameCount) {
-          console.log("[SequenceScroll] All frames preloaded successfully.");
+        if (loadedCount + failCount === actualFrameCount) {
+          console.log(`[SequenceScroll] Preload complete. Success: ${loadedCount}, Failed: ${failCount}`);
           setImagesLoaded(true);
           render(0);
         }
       };
       img.onerror = () => {
         console.error(`[SequenceScroll] Failed to load frame ${i}: ${url}`);
-        loadedCount++; 
-        if (loadedCount === actualFrameCount) {
+        failCount++; 
+        if (loadedCount + failCount === actualFrameCount) {
           setImagesLoaded(true);
         }
       };
