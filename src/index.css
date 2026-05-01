@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-wu-accent: #22d3ee;
+  --color-wu-dark: #05070a;
+  --color-wu-border: rgba(34, 211, 238, 0.2);
+}
+
+@layer base {
+  body {
+    @apply bg-wu-dark text-white font-sans antialiased selection:bg-wu-accent selection:text-wu-dark;
+    overflow-x: hidden;
+  }
+}
+
+.cinematic-vignette {
+  background: radial-gradient(circle, transparent 20%, rgba(5, 7, 10, 0.9) 100%);
+}
+
+.tech-grid {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 0);
+  background-size: 40px 40px;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-wu-dark;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-wu-accent/30 rounded-full hover:bg-wu-accent/50 transition-colors;
+}
