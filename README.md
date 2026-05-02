@@ -1,42 +1,68 @@
+# 🌊 Wuthering Waves – Interactive Web Experience
+
 <div align="center">
-<img src="https://i.postimg.cc/cCzvCxMD/Screenshot-2026-05-01-223927.png" />
+  <img src="https://i.postimg.cc/cCzvCxMD/Screenshot-2026-05-01-223927.png" alt="Preview" />
 </div>
 
-# Wuthering Waves
+<p align="center">
+  A cinematic, animated web experience inspired by <b>Wuthering Waves</b>.<br/>
+  Built with modern frontend technologies for smooth transitions, immersive UI, and dynamic interactions.
+</p>
 
-![TypeScript](https://img.shields.io/badge/language-TypeScript-blue.svg)
-![CSS](https://img.shields.io/badge/style-CSS-blue.svg)
-![HTML](https://img.shields.io/badge/markup-HTML-blue.svg)
-
-**Wuthering Waves** is a web project built primarily using TypeScript (95.6%), with additional CSS and HTML.
+---
 
 ## 🚀 Live Demo
+🔗 https://wuthering-waves-taupe.vercel.app/
 
-Check out the live demo here:  
-[https://wuthering-waves-taupe.vercel.app/](https://wuthering-waves-taupe.vercel.app/)
+---
 
-## Description
+## ✨ Overview
 
-A web application created with TypeScript, CSS, and HTML.  
-[Add more descriptive detail about what the project does or its scope here.]
+This project is a highly animated frontend web application designed to deliver a cinematic UI/UX experience.  
+It focuses on smooth scrolling, depth effects, transitions, and interactive elements similar to modern game landing pages.
 
-## Features
+---
 
-- Written in TypeScript for robust, scalable code.
-- Styled with CSS.
-- Structured with HTML.
-- [Add additional features relevant to your app]
+## ⚡ Features
 
-## Getting Started
+- 🎬 Cinematic animations (scroll-based & interactive)
+- 🌀 Smooth transitions and page effects
+- 🎯 Modern UI inspired by game interfaces
+- 🧠 TypeScript-based scalable logic
+- 🎨 Custom CSS styling
+- 💡 Lightweight and performance-focused
 
-### Prerequisites
+---
 
-- [Node.js](https://nodejs.org/) (recommended version)
-- npm (comes with Node.js)
+## 🛠️ Tech Stack
 
-### Installation
+- TypeScript  
+- HTML5  
+- CSS3  
+- Vercel (Deployment)
 
-Clone the repository and install dependencies:
+---
+
+## 📁 Project Structure
+
+```
+Wuthering-Waves/
+│── public/        # Static assets (images, icons, etc.)
+│── src/           # TypeScript source code
+│── styles/        # CSS files
+│── index.html     # Entry point
+│── package.json   # Project configuration
+```
+
+---
+
+## ⚙️ Getting Started
+
+### 📌 Prerequisites
+- Node.js (v16+ recommended)
+- npm
+
+### 📥 Installation
 
 ```bash
 git clone https://github.com/Hiran-Abhisheka/Wuthering-Waves.git
@@ -44,43 +70,67 @@ cd Wuthering-Waves
 npm install
 ```
 
-### Usage
+### ▶️ Run Locally
 
-Start the development server:
-
-```bash
-npm start
-```
-or
 ```bash
 npm run dev
 ```
 
-Visit `http://localhost:3000` (or the appropriate port) to view the app locally.
-
-## Project Structure
-
+Open in browser:
 ```
-src/
-  # TypeScript source code
-public/
-  # Static files and assets
-[Add more details as appropriate]
+http://localhost:3000
 ```
-
-## Contributing
-
-Contributions are welcome!  
-1. Fork the repository  
-2. Create your feature branch (`git checkout -b feature/YourFeature`)  
-3. Commit your changes (`git commit -m 'Add feature'`)  
-4. Push to the branch (`git push origin feature/YourFeature`)  
-5. Open a Pull Request
-
-## License
-
-[Add your license here, e.g., MIT]
 
 ---
 
-**Author:** [Hiran-Abhisheka](https://github.com/Hiran-Abhisheka)
+## 🎯 Project Goals
+
+- Practice advanced frontend animation techniques  
+- Build immersive game-style UI  
+- Improve TypeScript architecture  
+- Experiment with modern web interactions  
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository  
+2. Create a branch  
+   ```bash
+   git checkout -b feature/your-feature
+   ```
+3. Commit your changes  
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. Push to GitHub  
+   ```bash
+   git push origin feature/your-feature
+   ```
+5. Open a Pull Request  
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+## 👤 Author
+
+**Hiran Abhisheka**  
+https://github.com/Hiran-Abhisheka
+
+---
+
+## ⭐ Support
+
+If you like this project:
+- Star the repo  
+- Fork it  
+- Share it  
+
+---
